@@ -1,4 +1,4 @@
-import 'package:calculadora_imc_flutter/pages/main_page.dart';
+import 'package:calculadora_imc_flutter/pages/calculator_imc.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,8 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MainPage()
+      home: const CalculatorImc()
     );
   }
 }
-
