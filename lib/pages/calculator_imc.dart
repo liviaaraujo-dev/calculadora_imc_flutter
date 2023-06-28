@@ -1,7 +1,7 @@
+import 'package:calculadora_imc_flutter/model/imc_model.dart';
 import 'package:calculadora_imc_flutter/pages/calculator_imc.dart';
+import 'package:calculadora_imc_flutter/repository/imc_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 import '../widgets/result_imc.dart';
 
@@ -19,6 +19,24 @@ class _CalculatorImcState extends State<CalculatorImc> {
 
   var imc;
   String classificacao = '';
+
+  ImcRepository _imcRepository = ImcRepository();
+  List<ImcModel> _imcs = <ImcModel>[];
+
+  @override
+  void initState() {
+    _getImcs();
+    super.initState();
+  }
+
+  Future<void> _getImcs() async {
+    _imcs = await _imcRepository.getData();
+    setState(() {});
+    for(var i = 0; i < _imcs.length; i++){
+      print('${_imcs[i].id} ${_imcs[i].weight} ${_imcs[i].height} ${_imcs[i].imc} ${_imcs[i].classification}');
+    }
+    debugPrint(_imcs[0].classification.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +74,7 @@ class _CalculatorImcState extends State<CalculatorImc> {
               if(altura.text.isNotEmpty && peso.text.isNotEmpty ){
                 calculeImc();
                 classificacaoImc();
+                saveImc();
                 resultImc(context, imc, classificacao);
               }else{
                 if(altura.text.isEmpty && peso.text.isNotEmpty){
@@ -79,7 +98,32 @@ class _CalculatorImcState extends State<CalculatorImc> {
               }
             }, 
 
-          child: Text('Calcular')
+          child: Text('Calcular'),
+          ),
+          SingleChildScrollView(
+            child: Container(
+              child: SizedBox(
+              height: 300,
+                  child: ListView.builder(
+                    itemCount: _imcs.length,
+                    itemBuilder: (BuildContext context, index) {
+                      ImcModel _imc = _imcs[index];
+                      return Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(_imc.id.toString()),
+                            Text(_imc.weight.toString()),
+                            Text(_imc.height.toString()),
+                            Text(_imc.imc.toString()),
+                          ],
+                        )
+                      );
+                    }
+                  
+                  )
+              ),
+            ),
           )
         ],
       ),
@@ -97,7 +141,7 @@ class _CalculatorImcState extends State<CalculatorImc> {
     });
   }
 
-  String classificacaoImc(){
+  void  classificacaoImc(){
     if(imc < 16){
       classificacao = "Magreza extrema";
     }else if(imc >= 16 && imc < 17){
@@ -115,7 +159,27 @@ class _CalculatorImcState extends State<CalculatorImc> {
     }else{
       classificacao = "Obesidade grau III(mórbida)";
     }
-    return classificacao;
+    setState(() {});
   }
+
+  saveImc() async {
+    // var imcF = const ImcModel(
+    //   weight: double.parse(peso.text),
+    //   height: double.parse(altura.text),
+    //   imc: imc,
+    //   classification: classificacao
+    // );
+
+    await _imcRepository.create(
+      ImcModel(
+      weight: double.parse(peso.text),
+      height: double.parse(altura.text),
+      imc: imc,
+      classification: classificacao
+    )
+    );
+  }
+
+
 
 }
