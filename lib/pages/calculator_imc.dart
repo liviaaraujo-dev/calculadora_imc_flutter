@@ -1,9 +1,10 @@
 import 'package:calculadora_imc_flutter/model/imc_model.dart';
 import 'package:calculadora_imc_flutter/pages/calculator_imc.dart';
 import 'package:calculadora_imc_flutter/repository/imc_repository.dart';
+import 'package:calculadora_imc_flutter/shared/utils/util.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/result_imc.dart';
+import '../shared/widgets/result_imc.dart';
 
 class CalculatorImc extends StatefulWidget {
   const CalculatorImc({super.key});
@@ -20,7 +21,7 @@ class _CalculatorImcState extends State<CalculatorImc> {
   var imc;
   String classificacao = '';
 
-  ImcRepository _imcRepository = ImcRepository();
+  final _imcRepository = ImcRepository();
   List<ImcModel> _imcs = <ImcModel>[];
 
   @override
@@ -72,8 +73,10 @@ class _CalculatorImcState extends State<CalculatorImc> {
           ElevatedButton(
             onPressed: () async {
               if(altura.text.isNotEmpty && peso.text.isNotEmpty ){
-                calculeImc();
-                classificacaoImc();
+                setState(() {
+                  imc = calculationImc(peso.text, altura.text);
+                  classificacao = classificationImc(imc);
+                });
                 saveImc();
                 resultImc(context, imc, classificacao);
               }else{
@@ -116,6 +119,10 @@ class _CalculatorImcState extends State<CalculatorImc> {
                             Text(_imc.weight.toString()),
                             Text(_imc.height.toString()),
                             Text(_imc.imc.toString()),
+                            Text(_imc.date.toString()),
+                            IconButton(icon: Icon(Icons.recycling), onPressed: (){
+                              _imcRepository.delete(int.parse(_imc.id.toString()));
+                            },)
                           ],
                         )
                       );
@@ -134,33 +141,33 @@ class _CalculatorImcState extends State<CalculatorImc> {
     
   }
 
-  void calculeImc(){
-    setState(() {
-      imc = (double.parse(peso.text) / (double.parse(altura.text) * double.parse(altura.text))).toStringAsFixed(2);
-      imc = double.parse(imc);
-    });
-  }
+  // void calculeImc(){
+  //   setState(() {
+  //     imc = (double.parse(peso.text) / (double.parse(altura.text) * double.parse(altura.text))).toStringAsFixed(2);
+  //     imc = double.parse(imc);
+  //   });
+  // }
 
-  void  classificacaoImc(){
-    if(imc < 16){
-      classificacao = "Magreza extrema";
-    }else if(imc >= 16 && imc < 17){
-      classificacao = "Magreza moderada";
-    }else if(imc >= 17 && imc < 18.5){
-      classificacao = "Magreza leve";
-    }else if(imc >= 18.5&& imc < 25){
-      classificacao = "Saudável";
-    }else if(imc >= 25 && imc < 30){
-      classificacao = "Sobrepeso";
-    }else if(imc >= 30 && imc < 35){
-      classificacao = "Obesidade grau I";
-    }else if(imc >= 35 && imc < 40){
-      classificacao = "Obesidade grau II(severa)";
-    }else{
-      classificacao = "Obesidade grau III(mórbida)";
-    }
-    setState(() {});
-  }
+  // void  classificacaoImc(){
+  //   if(imc < 16){
+  //     classificacao = "Magreza extrema";
+  //   }else if(imc >= 16 && imc < 17){
+  //     classificacao = "Magreza moderada";
+  //   }else if(imc >= 17 && imc < 18.5){
+  //     classificacao = "Magreza leve";
+  //   }else if(imc >= 18.5&& imc < 25){
+  //     classificacao = "Saudável";
+  //   }else if(imc >= 25 && imc < 30){
+  //     classificacao = "Sobrepeso";
+  //   }else if(imc >= 30 && imc < 35){
+  //     classificacao = "Obesidade grau I";
+  //   }else if(imc >= 35 && imc < 40){
+  //     classificacao = "Obesidade grau II(severa)";
+  //   }else{
+  //     classificacao = "Obesidade grau III(mórbida)";
+  //   }
+  //   setState(() {});
+  // }
 
   saveImc() async {
     // var imcF = const ImcModel(
@@ -169,13 +176,16 @@ class _CalculatorImcState extends State<CalculatorImc> {
     //   imc: imc,
     //   classification: classificacao
     // );
+    final now = DateTime.now();
+    print('${now.day}/${now.month}/${now.year}');
 
     await _imcRepository.create(
       ImcModel(
       weight: double.parse(peso.text),
       height: double.parse(altura.text),
       imc: imc,
-      classification: classificacao
+      classification: classificacao,
+      date: '${now.day}/${now.month}/${now.year}'
     )
     );
   }

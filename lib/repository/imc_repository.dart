@@ -14,7 +14,8 @@ class ImcRepository{
         weight: maps[i]['weight'],
         height: maps[i]['height'],
         imc: maps[i]['imc'],
-        classification: maps[i]['classification']
+        classification: maps[i]['classification'],
+        date: maps[i]['date']
       );
     });
   }
@@ -22,8 +23,8 @@ class ImcRepository{
   Future<void> create(ImcModel imc) async {
     var db = await DB().database();
 
-    db.rawInsert('INSERT INTO imc (weight, height, imc, classification) VALUES(?, ?, ?, ?)',
-      [imc.weight, imc.height, imc.imc, imc.classification]
+    db.rawInsert('INSERT INTO imc (weight, height, imc, classification, date) VALUES(?, ?, ?, ?, ?)',
+      [imc.weight, imc.height, imc.imc, imc.classification, imc.date]
     );
   }
 

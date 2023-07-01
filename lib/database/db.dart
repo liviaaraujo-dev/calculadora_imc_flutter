@@ -26,6 +26,6 @@ class DB{
     db.execute(_imc);
   }
 
-  String get _imc => 'CREATE TABLE imc(id INTEGER PRIMARY KEY AUTOINCREMENT, weight REAL, height REAL, imc REAL, classification TEXT)';
+  String get _imc => 'CREATE TABLE imc(id INTEGER PRIMARY KEY AUTOINCREMENT, weight REAL, height REAL, imc REAL, classification TEXT, date TEXT)';
   
 }

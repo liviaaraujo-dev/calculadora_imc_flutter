@@ -4,9 +4,10 @@ class ImcModel{
   final double height;
   final double imc;
   final String classification;
+  final String date;
 
   const ImcModel( {this.id,
- required this.weight,required this.height, required this.imc, required this.classification
+ required this.weight,required this.height, required this.imc, required this.classification, required this.date
   });
 
   Map<dynamic, dynamic> toMap(){
@@ -15,7 +16,8 @@ class ImcModel{
       'weight': weight,
       'height': height,
       'imc': imc,
-      'classification': classification
+      'classification': classification,
+      'date': date
     };
   }
 }
