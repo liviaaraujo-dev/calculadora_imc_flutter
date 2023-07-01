@@ -4,4 +4,4 @@ Calculadora Imc desenvolvida com o framework flutter, permistindo os dados local
 
 
 
- <img height="30" width="40" src="https://github.com/liviaaraujo-dev/calculadora_imc_flutter/blob/main/print.jpeg">
+ <img height="100"  src="https://github.com/liviaaraujo-dev/calculadora_imc_flutter/blob/main/print.jpeg">
