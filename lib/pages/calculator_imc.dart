@@ -36,35 +36,76 @@ class _CalculatorImcState extends State<CalculatorImc> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Calculadora Imc'), centerTitle: true),
+        appBar: AppBar(title: const Text('CALCULADORA IMC', style: TextStyle(fontWeight: FontWeight.w500),), centerTitle: true),
         body: SingleChildScrollView(
           child: Form(
               child: Column(
           children: [
-            const Text('Calcule o seu imc'),
-            Column(
-              children: [
-                const Text('Sua altura'),
-                TextFormField(
-                  controller: altura,
-                  onChanged: (value){
-                    debugPrint(value);
-                  },
-                )
-              ],
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Altura', style: TextStyle(fontSize: 25, color: Color(0xFF525052)),),
+                  SizedBox(height: 5,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 35,
+                        child: TextFormField(
+                          controller: altura,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            
+                          ),
+                          onChanged: (value){
+                            debugPrint(value);
+                          },
+                        ),
+                      ),
+                      Text(' m', style: TextStyle(fontSize: 25, color: Colors.deepPurple),)
+                    ],
+                  )
+                ],
+              ),
             ),
-            Column(
-              children: [
-                Container(child: const Text('Seu peso')),
-                TextFormField(
-                  controller: peso,
-                  onChanged: (value){
-                    debugPrint(value);
-                  },
-                )
-              ],
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Peso', style: TextStyle(fontSize: 25, color: Color(0xFF525052)),),
+                  SizedBox(height: 5,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 35,
+                        child: TextFormField(
+                          controller: peso,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            
+                          ),
+                          onChanged: (value){
+                            debugPrint(value);
+                          },
+                        ),
+                      ),
+                      Text(' kg', style: TextStyle(fontSize: 25, color: Colors.deepPurple),)
+                    ],
+                  )
+                ],
+              ),
             ),
+           SizedBox(height: 30,),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10)
+              ),
               onPressed: () async {
                 if(altura.text.isNotEmpty && peso.text.isNotEmpty ){
                   setState(() {
@@ -74,6 +115,8 @@ class _CalculatorImcState extends State<CalculatorImc> {
                   saveImc();
                   resultImc(context, imc, classificacao);
                   _getImcs();
+                  peso.clear();
+                  altura.clear();
                 }else{
                   if(altura.text.isEmpty && peso.text.isNotEmpty){
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -96,11 +139,13 @@ class _CalculatorImcState extends State<CalculatorImc> {
                 }
               }, 
         
-            child: Text('Calcular'),
+            child: Text('CALCULAR', style: TextStyle(fontSize: 18),),
             ),
-            Text('Imcs Calculados'),
-            SingleChildScrollView(
-              child: Container(
+            Container(
+              margin: EdgeInsets.only(top: 60, bottom: 20),
+              child: Text('IMCs calculados', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500))
+            ),
+             Container(
                 child: SizedBox(
                 height: 300,
                     child: ListView.builder(
@@ -108,18 +153,24 @@ class _CalculatorImcState extends State<CalculatorImc> {
                       itemBuilder: (BuildContext context, index) {
                         ImcModel _imc = _imcs[index];
                         return Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          margin: EdgeInsets.only(left: 10, top: 5),
+                          child: Column(
                             children: [
-                              Text(_imc.date.toString()),
-                              Text(_imc.classification.toString()),
-                              Text(_imc.imc.toString()),
-                              Text(_imc.weight.toString() + ' kg'),
-                              Text(_imc.height.toString() + ' m'),
-                              IconButton(icon: Icon(Icons.recycling), onPressed: (){
-                                _imcRepository.delete(int.parse(_imc.id.toString()));
-                                _getImcs();
-                              },)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(_imc.date.toString(), style: TextStyle(fontSize: 15),),
+                                  Text(_imc.classification.toString(),style: TextStyle(fontSize: 15),),
+                                  Text(_imc.imc.toString(), style: TextStyle(fontSize: 15),),
+                                  Text(_imc.weight.toString() + ' kg', style: TextStyle(fontSize: 15)),
+                                  Text(_imc.height.toString() + ' m',style: TextStyle(fontSize: 15)),
+                                  IconButton(icon: Icon(Icons.delete, color: Colors.red,), onPressed: (){
+                                    _imcRepository.delete(int.parse(_imc.id.toString()));
+                                    _getImcs();
+                                  },),
+                                ],
+                              ),
+                              Divider(color: Colors.deepPurple,),
                             ],
                           )
                         );
@@ -128,7 +179,6 @@ class _CalculatorImcState extends State<CalculatorImc> {
                     )
                 ),
               ),
-            )
           ],
               ),
             ),
