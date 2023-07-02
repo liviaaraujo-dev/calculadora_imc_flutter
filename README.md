@@ -1,6 +1,6 @@
 # Calculadora Imc
 
-Calculadora Imc desenvolvida com o framework flutter, permistindo os dados localmente utilizando o banco de dados Sqlite.
+Calculadora Imc desenvolvida com o framework flutter, salvando os dados localmente utilizando o banco de dados Sqlite.
 
 
 
